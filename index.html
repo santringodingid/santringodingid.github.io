@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
+
+	<title>Simulasi Angsuran</title>
+
+	<!-- Google font -->
+	<link href="https://fonts.googleapis.com/css?family=Montserrat:300,600" rel="stylesheet">
+
+	<!-- Bootstrap -->
+	<link type="text/css" rel="stylesheet" href="css/bootstrap.min.css" />
+
+	<!-- Custom stlylesheet -->
+	<link type="text/css" rel="stylesheet" href="css/style.css" />
+	<link rel="stylesheet" href="css/toastr.css">
+
+	<script src="./js/jquery.min.js"></script>
+	<script src="./js/toastr.js"></script>
+</head>
+
+<body>
+	<div id="booking" class="section">
+		<div class="section-center">
+			<div class="container">
+				<div class="row">
+					<div class="booking-form">
+						<form autocomplete="off">
+							<div class="col-md-4">
+								<div class="form-group">
+									<span class="form-label">
+										JUMLAH PEMBIAYAAN/HARGA
+										<img src="./img/help.png" class="img-help" onclick="showHelp(0)">
+									</span>
+									<input class="form-control" type="text" id="price" autofocus>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<span class="form-label">
+										DP
+										<img src="./img/help.png" class="img-help" onclick="showHelp(1)">
+									</span>
+									<input class="form-control" type="text" id="dp">
+								</div>
+							</div>
+							<div class="col-md-2">
+								<div class="form-group">
+									<span class="form-label">Jangka</span>
+									<input class="form-control" type="text" id="jangka" maxlength="2">
+								</div>
+							</div>
+							<div class="col-md-2">
+								<div class="form-group">
+									<span class="form-label">Margin</span>
+									<input class="form-control" type="text" id="margin">
+								</div>
+							</div>
+							<div class="col-md-3">
+								<div class="form-group">
+									<span class="form-label">Modal</span>
+									<input class="form-control result-form " type="text" id="modal" readonly>
+								</div>
+							</div>
+							<div class="col-md-3">
+								<div class="form-group">
+									<span class="form-label">Ang. Pokok</span>
+									<input class="form-control" type="text" id="ang-pokok" readonly>
+								</div>
+							</div>
+							<div class="col-md-3">
+								<div class="form-group">
+									<span class="form-label">Ang. Margin</span>
+									<input class="form-control" type="text" id="ang-margin" readonly>
+								</div>
+							</div>
+							<div class="col-md-3">
+								<div class="form-group">
+									<span class="form-label">Jml. Angsuran</span>
+									<input class="form-control" type="text" id="jumlah" readonly>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<span class="form-label">Total</span>
+									<input class="form-control" type="text" id="total" readonly>
+								</div>
+							</div>
+							<div class="col-md-4">
+								<div class="form-group">
+									<span class="form-label">Harga Jual</span>
+									<input class="form-control" type="text" id="sale" readonly>
+								</div>
+							</div>
+						</form>
+						<div class="col-md-2">
+							<div class="form-btn">
+								<span class="form-label"></span>
+								<button class="reset-btn" onclick="resetForm()">Reset (F2)</button>
+							</div>
+						</div>
+						<div class="col-md-2">
+							<div class="form-btn">
+								<span class="form-label"></span>
+								<button class="submit-btn" id="btn-set" onclick="setSimulation()">Next</button>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<script src="./js/auto-numeric.js"></script>
+	<script>
+
+		toastr.options = {
+			positionClass: 'toast-top-center'
+		}
+
+		$('#price').autoNumeric('init', {
+			aSign: 'Rp.   ',
+			aSep: '.',
+			aDec: ',',
+			mDec: '0'
+		});
+
+		$('#dp').autoNumeric('init', {
+			aSign: 'Rp.   ',
+			aSep: '.',
+			aDec: ',',
+			mDec: '0'
+		})
+
+		$('#jangka').autoNumeric('init', {
+			vMin: '0',
+			vMax: '60',
+			aSep: '.',
+			aDec: ',',
+			mDec: '0'
+		})
+
+		$('#margin').autoNumeric('init', {
+			aSign: '%',
+			pSign: 's'
+		})
+
+		$('#modal').autoNumeric('init', {
+			aSign: 'Rp.   ',
+			aSep: '.',
+			aDec: ',',
+			mDec: '0'
+		})
+
+		$('#ang-pokok').autoNumeric('init', {
+			aSign: 'Rp.   ',
+			aSep: '.',
+			aDec: ',',
+			mDec: '0'
+		})
+
+		$('#ang-margin').autoNumeric('init', {
+			aSign: 'Rp.   ',
+			aSep: '.',
+			aDec: ',',
+			mDec: '0'
+		})
+
+		$('#jumlah').autoNumeric('init', {
+			aSign: 'Rp.   ',
+			aSep: '.',
+			aDec: ',',
+			mDec: '0'
+		})
+
+		$('#total').autoNumeric('init', {
+			aSign: 'Rp.   ',
+			aSep: '.',
+			aDec: ',',
+			mDec: '0'
+		})
+
+		$('#sale').autoNumeric('init', {
+			aSign: 'Rp.   ',
+			aSep: '.',
+			aDec: ',',
+			mDec: '0'
+		})
+
+		$('#price').on('keyup', function (e) {
+			let keyCode = e.keyCode
+			let priceValue = $(this).autoNumeric('get')
+			if(keyCode === 13) {
+				if(!priceValue || priceValue <= 0){
+					toastr.error('Harga/Jumlah pinjaman harus diisi dan > 0')
+					return false
+				}
+
+				$('#dp').focus().select()
+			}
+		})
+
+		$('#dp').on('keyup', function (e) {
+			let keyCode = e.keyCode
+			let dpValue = $(this).autoNumeric('get')
+			if(keyCode === 13) {
+				if(!dpValue || dpValue < 0){
+					toastr.error('DP harus diisi atau isi dengan 0')
+					return false
+				}
+
+				$('#jangka').focus().select()
+			}
+		})
+
+		$('#jangka').on('keyup', function (e) {
+			let keyCode = e.keyCode
+			let jangkaValue = $(this).autoNumeric('get')
+			if(keyCode === 13) {
+				if(!jangkaValue || jangkaValue <= 0){
+					toastr.error('Jangka harus diisi atau isi dan > 0')
+					return false
+				}
+
+				$('#margin').focus()
+			}
+		})
+
+		$('#margin').on('keyup', function (e) {
+			let keyCode = e.keyCode
+			let jangkaValue = $(this).autoNumeric('get')
+			if(keyCode === 13) {
+				if(!jangkaValue || jangkaValue <= 0){
+					toastr.error('Jangka harus diisi atau isi dan > 0')
+					return false
+				}
+
+				$('#btn-set').focus()
+			}
+		})
+
+		const resetResult = () => {
+			$('#modal').val('')
+			$('#ang-pokok').val('')
+			$('#ang-margin').val('')
+			$('#jumlah').val('')
+			$('#total').val('')
+			$('#sale').val('')
+		}
+
+		const resetEntri = () => {
+			let price = $('#price').val('')
+			let dp = $('#dp').val('')
+			let jangka = $('#jangka').val('')
+			let margin = $('#margin').val('')
+		}
+
+		const resetForm = () => {
+			resetResult()
+			resetEntri()
+
+			$('#price').focus()
+		}
+
+		$('body').on('keyup', function(e){
+			let keyCode = e.keyCode
+			if (keyCode === 113) {
+				resetForm()
+			}
+		})
+
+		const setSimulation = () => {
+			let price = $('#price').autoNumeric('get')
+			let dp = $('#dp').autoNumeric('get')
+			let jangka = $('#jangka').autoNumeric('get')
+			let margin = $('#margin').autoNumeric('get')
+
+			if(!price || !dp || !jangka || !margin){
+				if(!price) {
+					toastr.error('Jumlah pembiyaan/harga belum diisi')
+					return false
+				}
+				if(!dp) {
+					toastr.error('DP belum diisi')
+					return false
+				}
+
+				if(!jangka) {
+					toastr.error('Jangka belum diisi')
+					return false
+				}
+
+				if(!margin) {
+					toastr.error('Margin belum diisi')
+					return false
+				}
+				return false
+			}
+
+			let modal = price - dp
+			let angPokokBefore = modal / jangka
+			let angPokok = Math.round(angPokokBefore / 1000) * 1000;
+			let angmargin = margin / 100 * modal
+			let angsuran = angPokok + angmargin
+			let total = angsuran * jangka
+			let sale = parseInt(total) + parseInt(dp)
+
+			$('#modal').autoNumeric('set', modal)
+			$('#ang-pokok').autoNumeric('set', angPokok)
+			$('#ang-margin').autoNumeric('set', angmargin)
+			$('#jumlah').autoNumeric('set', angsuran)
+			$('#total').autoNumeric('set', total)
+			$('#sale').autoNumeric('set', sale)
+
+			$('#btn-set').blur()
+
+			toastr.success('Yes, perhitungan selesai..')
+		}
+
+		const showHelp = type => {
+			let types = [
+				'Jumlah Pembiyaan untuk RAHN. Harga untuk MURABAHAH',
+				'DP: Pembayaran secara tunai yang dilakukan ketika ingin membeli barang dan aset secara kredit'
+			];
+
+			toastr.options = {
+				"positionClass": "toast-top-center",
+				"showDuration": "100",
+				"showEasing": "linear",
+				"hideEasing": "swing",
+				"newestOnTop": true,
+  				"progressBar": true,
+				"preventDuplicates": true,
+				"closeButton": true,
+			}
+
+			toastr.info(types[type])
+		}
+
+	</script>
+</body>
+
+</html>
